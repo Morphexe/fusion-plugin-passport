@@ -61,28 +61,7 @@ const buildStrategy = (store, Session) => strategyConfig => {
     // Calback for a sucessfull login
     if (ctx.path == strategyConfig.config.callbackURL) {
       const redirectControl = async (ctx, next) => {
-        console.warn('WE GOT THIS ', Session.get('user'));
-        //const {req} = ctx;
-        //const redirectUrl = req.query && req.query.state;
-        // try to get the userId from the session
-        //const userId = Session.get('userId');
-        //const currentUser = await store.getUserById(userId);
-        //const tokens = await access.grantAccess(user, req);
-        //const currentUser = await getCurrentUser(req, res);
-        // if (redirectUrl) {
-        //   ctx.redirect(
-        //     redirectUrl +
-        //       (userId
-        //         ? '?data=' +
-        //           JSON.stringify({
-        //             userId,
-        //             user: currentUser,
-        //           })
-        //         : '')
-        //   );
-        // } else {
         ctx.redirect(strategyConfig.redirect || '/');
-        // }
       };
 
       return compose([
