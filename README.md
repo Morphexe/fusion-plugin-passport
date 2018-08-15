@@ -1,6 +1,6 @@
 # fusion-plugin-passport
 
-The `fusion-plugin-passport` package provides a passport implementation for the  [FusionJS](https://github.com/fusionjs).
+The `fusion-plugin-passport` package provides a  [PassportJS](http://www.passportjs.org/) implementation for [FusionJS](https://github.com/fusionjs).
 
 ---
 
