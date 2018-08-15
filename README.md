@@ -1,6 +1,7 @@
 # fusion-plugin-passport
 
 The `fusion-plugin-passport` package provides a  [PassportJS](http://www.passportjs.org/) implementation for [FusionJS](https://github.com/fusionjs).
+This is currently in very early release, it should work, but still lacks tests,flow typings, and some architecture changes are still planned.
 
 ---
 
@@ -33,29 +34,40 @@ import root from './components/root';
 export default function start(App) {
   const app = new App(root);
   app.register(Router);
-  app.register(UserStore, {
-    registerAuthForUser(authName /*the same parameter passed in the config */,id /*AuthProvider ID*/, userId /* Id returned by the getUserByEmail*/ ) { ....},
-    register({id, email, password}) { .... },
-    getUserByEmail(email) {
-      let user = loadFromDatabase;
-      return user;
-    }
-  });
-  app.register(PassportToken, [
-    {
-      config: {
-        clientID: "-----------", // clientID
-        clientSecret: "----------", // app secret
-        scope: ["email"], // the scope
-        callbackURL : "/auth/facebook/callback",
-        profileFields: ["id", "emails", "displayName"] // fields to retrive
+if (__NODE__) {
+    app.register(SessionToken, JWTSession);
+    app.register(SessionSecretToken, "some-secret"); // required
+    app.register(SessionCookieNameToken, "some-cookie-name"); // required
+    app.register(SessionCookieExpiresToken, 86400); // optional
+    app.register(PassportToken, [
+      {
+        /*config is the default Passport Config object*/
+        config: {
+          clientID: "--------------", // clientID
+          clientSecret: "--------------", // app secret
+          scope: ["email"], // the scope
+          callbackURL: "/auth/facebook/callback",
+          profileFields: ["id", "emails", "displayName"] // fields to retrive
+        },
+        name: "facebook",
+        redirect: "/",
+        authUrl: "/auth/facebook",
+        Strategy: FacebookStrategy
+      }
+    ]);
+    app.register(UserStore, {
+      getUserByEmail() {
+        return { email: "something@somethig.com", id: "1298393812093548907" };
       },
-      name: "facebook",  // This name needs to match the strategy and is used internally
-      redirect: "/",
-      authUrl: "/auth/facebook",
-      Strategy : FacebookStrategy // any strategy for passport should work
-    }
-  ]);
+      register(ob) {
+        console.warn("registered user", ob);
+      },
+      registerAuthForUser(auth, id, userid) {
+        console.warn("NEW AUTH TYPE for user", auth, id, userid);
+      }
+    });
+    app.register(Passport);
+  }
 
   return app;
 }
