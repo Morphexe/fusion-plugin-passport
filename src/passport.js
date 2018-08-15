@@ -6,8 +6,8 @@ import compose from 'koa-compose';
 import {createPlugin, createToken} from 'fusion-core';
 import {SessionToken} from 'fusion-tokens';
 
-export const Token = createToken('PassportConfigToken');
-export const UserStore = createToken('PassportStore');
+export const PassportConfigToken = createToken('PassportConfigToken');
+export const UserStoreToken = createToken('PassportStore');
 
 const setupPassport = (config, store, Session) => {
   passport.use(
@@ -79,8 +79,8 @@ export const Plugin =
   createPlugin({
     deps: {
       Session: SessionToken,
-      strategyConfigs: Token,
-      store: UserStore,
+      strategyConfigs: PassportConfigToken,
+      store: UserStoreToken,
     },
     // provides() {
     //   return service;
