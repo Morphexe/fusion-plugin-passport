@@ -73,7 +73,8 @@ export default function start(App) {
 import Passport from "fusion-plugin-passport";
 ```
 
-The plugin.
+
+The plugin. The plugin requires a SessionToken to be set to store the current user information.  In my examples I use [JWT](https://github.com/fusionjs/fusion-plugin-jwt)
 
 ##### `PassportToken`
 
