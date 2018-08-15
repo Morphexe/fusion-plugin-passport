@@ -9,5 +9,6 @@ import {Token, Plugin} from './passport';
 
 declare var __BROWSER__: Boolean;
 
+export {UserStore} from './passport';
 export const PassportToken = Token;
 export default (!__BROWSER__ ? Plugin : null);

@@ -4,11 +4,12 @@ import passport from 'koa-passport';
 import compose from 'koa-compose';
 
 import {createPlugin, createToken} from 'fusion-core';
+import {SessionToken} from 'fusion-tokens';
 
 export const Token = createToken('PassportConfigToken');
 export const UserStore = createToken('PassportStore');
 
-const setupPassport = (config, store) => {
+const setupPassport = (config, store, Session) => {
   passport.use(
     new config.Strategy(config.config, async function(
       accessToken,
@@ -33,6 +34,8 @@ const setupPassport = (config, store) => {
         }
         // register the auth type for the user
         await store.registerAuthForUser(config.name, id, user.id);
+        //save the session
+        Session.set('user', user.id);
         return cb(null, user);
       } catch (err) {
         return cb(err, {});
@@ -41,12 +44,12 @@ const setupPassport = (config, store) => {
   );
 };
 
-const buildStrategy = store => strategyConfig => {
+const buildStrategy = (store, Session) => strategyConfig => {
   const setupStrategy = (ctx, next) => {
-    setupPassport(strategyConfig, store);
+    setupPassport(strategyConfig, store, Session);
     return next();
   };
-  const routesSetup = (ctx, next) => {
+  const routesSetup = async (ctx, next) => {
     const authUrl = strategyConfig.authUrl;
     if (!authUrl) throw new Error("Invalid authUrl, can't be empty value");
     // If we are not a Get Request we just go to the next middleware
@@ -58,28 +61,28 @@ const buildStrategy = store => strategyConfig => {
     // Calback for a sucessfull login
     if (ctx.path == strategyConfig.config.callbackURL) {
       const redirectControl = async (ctx, next) => {
-        const {req} = ctx;
-        const redirectUrl = req.query && req.query.state;
-        const tokens = '';
-        const currentUser = {
-          data: {},
-        };
+        console.warn('WE GOT THIS ', Session.get('user'));
+        //const {req} = ctx;
+        //const redirectUrl = req.query && req.query.state;
+        // try to get the userId from the session
+        //const userId = Session.get('userId');
+        //const currentUser = await store.getUserById(userId);
         //const tokens = await access.grantAccess(user, req);
         //const currentUser = await getCurrentUser(req, res);
-        if (redirectUrl) {
-          ctx.redirect(
-            redirectUrl +
-              (tokens
-                ? '?data=' +
-                  JSON.stringify({
-                    tokens,
-                    user: currentUser.data,
-                  })
-                : '')
-          );
-        } else {
-          ctx.redirect(strategyConfig.redirect || '/');
-        }
+        // if (redirectUrl) {
+        //   ctx.redirect(
+        //     redirectUrl +
+        //       (userId
+        //         ? '?data=' +
+        //           JSON.stringify({
+        //             userId,
+        //             user: currentUser,
+        //           })
+        //         : '')
+        //   );
+        // } else {
+        ctx.redirect(strategyConfig.redirect || '/');
+        // }
       };
 
       return compose([
@@ -96,15 +99,19 @@ export const Plugin =
   __NODE__ &&
   createPlugin({
     deps: {
+      Session: SessionToken,
       strategyConfigs: Token,
       store: UserStore,
     },
     // provides() {
     //   return service;
     // },
-    middleware({strategyConfigs, store}) {
+    middleware({Session, strategyConfigs, store}) {
       return (ctx, next) => {
-        const strats = compose(strategyConfigs.map(buildStrategy(store)));
+        const actualSession = Session.from(ctx);
+        const strats = compose(
+          strategyConfigs.map(buildStrategy(store, actualSession))
+        );
 
         return strats(ctx, next);
       };

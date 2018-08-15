@@ -26,7 +26,6 @@
     "koa-compose": "4.1.0"
   },
   "peerDependencies": {
-    "fusion-core": "^1.4.1",
     "react": "14.x - 16.x",
     "react-dom": "14.x - 16.x"
   },
