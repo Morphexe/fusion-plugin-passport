@@ -25,7 +25,7 @@ yarn add fusion-plugin-passport
 ```jsx
 // src/main.js
 import App from 'fusion-react';
-import Passport, { PassportToken, UserStore } from 'fusion-plugin-passport';
+import Passport, { PassportConfigToken, UserStoreToken } from 'fusion-plugin-passport';
 import UniversalEvents, {
   UniversalEventsToken,
 } from 'fusion-plugin-universal-events';
@@ -39,7 +39,7 @@ if (__NODE__) {
     app.register(SessionSecretToken, "some-secret"); // required
     app.register(SessionCookieNameToken, "some-cookie-name"); // required
     app.register(SessionCookieExpiresToken, 86400); // optional
-    app.register(PassportToken, [
+    app.register(PassportConfigToken, [
       {
         /*config is the default Passport Config object*/
         config: {
@@ -55,7 +55,7 @@ if (__NODE__) {
         Strategy: FacebookStrategy
       }
     ]);
-    app.register(UserStore, {
+    app.register(UserStoreToken, {
       getUserByEmail() {
         return { email: "something@somethig.com", id: "1298393812093548907" };
       },
@@ -88,24 +88,24 @@ import Passport from "fusion-plugin-passport";
 
 The plugin. The plugin requires a SessionToken to be set to store the current user information.  In my examples I use [JWT](https://github.com/fusionjs/fusion-plugin-jwt)
 
-##### `PassportToken`
+##### `PassportConfigToken`
 
 ```jsx
-import { PassportToken } from "fusion-plugin-passport";
+import { PassportConfigToken } from "fusion-plugin-passport";
 ```
 
 A token for registering the passport configuration.
 
-##### `UserStore`
+##### `UserStoreToken`
 
 ```jsx
-import { UserStore } from "fusion-plugin-passport";
+import { UserStoreToken } from "fusion-plugin-passport";
 ```
 
-A token for registering the UserStore to be used by the plugin to handle registration and user fetching.
+A token for registering the UserStoreToken to be used by the plugin to handle registration and user fetching.
 The user store supports has the following interface:
 
-###### `UserStore Api`
+###### `UserStoreToken Api`
 
 ```js
  {
