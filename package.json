@@ -1,0 +1,71 @@
+{
+  "name": "fusion-plugin-passport",
+  "description": "The `fusion-plugin-passport`",
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": "fusion-plugin-passport",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.es.js",
+  "browser": {
+    "./dist/index.js": "./dist/browser.es5.js",
+    "./dist/index.es.js": "./dist/browser.es5.es.js"
+  },
+  "es2015": {
+    "./dist/browser.es5.es.js": "./dist/browser.es2015.es.js"
+  },
+  "es2017": {
+    "./dist/browser.es5.es.js": "./dist/browser.es2017.es.js",
+    "./dist/browser.es2015.es.js": "./dist/browser.es2017.es.js"
+  },
+  "dependencies": {
+    "koa-passport": "4.1.0",
+    "koa-compose": "4.1.0"
+  },
+  "peerDependencies": {
+    "fusion-core": "^1.4.1",
+    "react": "14.x - 16.x",
+    "react-dom": "14.x - 16.x"
+  },
+  "devDependencies": {
+    "@babel/preset-react": "^7.0.0-rc.1",
+    "babel-eslint": "8.2.6",
+    "create-universal-package": "3.4.6",
+    "eslint": "5.3.0",
+    "eslint-config-fusion": "^4.0.0",
+    "eslint-plugin-cup": "2.0.0",
+    "eslint-plugin-flowtype": "2.50.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jest": "^21.21.0",
+    "eslint-plugin-prettier": "2.6.2",
+    "eslint-plugin-react": "7.11.0",
+    "flow-bin": "0.78.0",
+    "fusion-core": "^1.4.1",
+    "fusion-plugin-universal-events": "^1.0.5",
+    "fusion-react": "^1.1.0",
+    "fusion-test-utils": "^1.2.2",
+    "fusion-tokens": "^1.0.4",
+    "nyc": "12.0.2",
+    "prettier": "1.14.2",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
+    "tape-cup": "4.7.1",
+    "unitest": "2.1.1"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "lint": "eslint . --ignore-path .gitignore",
+    "build-test": "rm -rf dist-tests && cup build-tests",
+    "just-test": "node_modules/.bin/unitest --browser=dist-tests/browser.js --node=dist-tests/node.js",
+    "test": "npm run build-test && npm run just-test",
+    "cover": "npm run build-test && nyc npm run just-test",
+    "transpile": "npm run clean && cup build",
+    "prepublish": "npm run transpile"
+  },
+  "engines": {
+    "node": ">= 8.9.0"
+  }
+}
